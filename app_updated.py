@@ -71,7 +71,7 @@ if uploaded_file:
 
         st.markdown("###  نظرة عامة للموظفين الوافدين فقط")
 
-        df_non_citizens = df[df['الجنسية'] != 'إماراتي'].copy()
+        df_non_citizens = df[df['الجنسية'] != 'إماراتية'].copy()
         total_non = df_non_citizens.shape[0]
         required_cols = ['رقم الأقامة', 'الكفيل', 'تاريخ اصدار اللإقامة', 'تاريخ انتهاء اللإقامة']
         present_required_cols = [col for col in required_cols if col in df_non_citizens.columns]
