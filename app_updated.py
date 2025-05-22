@@ -153,33 +153,63 @@ if uploaded_file:
                 fig_box.update_layout(title='Boxplot - العمر حسب الجنس', title_x=0.5)
                 st.plotly_chart(fig_box, use_container_width=True)
 
+
     # ---------------- Tab 3 ---------------- #
     with tab3:
         st.markdown("###  تحليل البيانات المفقودة")
 
-        missing_percent = df.isnull().mean() * 100
-        missing_count = df.isnull().sum()
+        # Split into citizens and non-citizens
+        df_citizens = df[df['الجنسية'] == 'إماراتية'].copy()
+        df_non_citizens = df[df['الجنسية'] != 'إماراتية'].copy()
 
-        missing_df = pd.DataFrame({
-            'العمود': df.columns,
-            'عدد القيم المفقودة': missing_count,
-            'النسبة المئوية': missing_percent
-        })
+        st.subheader(" نواقص المواطنين ")
+        excluded_cols = ['رقم الأقامة', 'الكفيل', 'تاريخ اصدار اللإقامة', 'تاريخ انتهاء اللإقامة']
+        filtered_citizen_df = df_citizens.drop(columns=[col for col in excluded_cols if col in df_citizens.columns])
+        missing_percent_c = filtered_citizen_df.isnull().mean() * 100
+        missing_count_c = filtered_citizen_df.isnull().sum()
 
-        missing_df = missing_df[missing_df['عدد القيم المفقودة'] > 0]
+        missing_df_c = pd.DataFrame({
+            'العمود': filtered_citizen_df.columns,
+            'عدد القيم المفقودة': missing_count_c,
+            'النسبة المئوية': missing_percent_c
+        }).query("`عدد القيم المفقودة` > 0")
 
-        fig_missing = px.bar(
-            missing_df,
+        fig_c = px.bar(
+            missing_df_c,
             x='العمود',
             y='عدد القيم المفقودة',
             color='النسبة المئوية',
-            text=missing_df.apply(lambda row: f"{row['عدد القيم المفقودة']} | {round(row['النسبة المئوية'], 1)}%", axis=1),
+            text=missing_df_c.apply(lambda row: f"{row['عدد القيم المفقودة']} | {round(row['النسبة المئوية'], 1)}%", axis=1),
             color_continuous_scale=['#C8D9E6', '#2F4156']
         )
-        fig_missing.update_layout(title="عدد القيم المفقودة ونسبتها لكل عمود", title_x=0.5, xaxis_tickangle=-45)
-        st.plotly_chart(fig_missing, use_container_width=True)
+        fig_c.update_layout(title="المواطنين - عدد القيم المفقودة ونسبتها", title_x=0.5, xaxis_tickangle=-45)
+        st.plotly_chart(fig_c, use_container_width=True)
 
-        st.markdown("### 📌 تحليل مفقودات عمود محدد")
+        st.subheader(" نواقص الوافدين ")
+        required_cols = ['رقم الأقامة', 'الكفيل', 'تاريخ اصدار اللإقامة', 'تاريخ انتهاء اللإقامة']
+        filtered_non_df = df_non_citizens[[col for col in required_cols if col in df_non_citizens.columns]]
+        missing_percent_n = filtered_non_df.isnull().mean() * 100
+        missing_count_n = filtered_non_df.isnull().sum()
+
+        missing_df_n = pd.DataFrame({
+            'العمود': filtered_non_df.columns,
+            'عدد القيم المفقودة': missing_count_n,
+            'النسبة المئوية': missing_percent_n
+        }).query("`عدد القيم المفقودة` > 0")
+
+        fig_n = px.bar(
+            missing_df_n,
+            x='العمود',
+            y='عدد القيم المفقودة',
+            color='النسبة المئوية',
+            text=missing_df_n.apply(lambda row: f"{row['عدد القيم المفقودة']} | {round(row['النسبة المئوية'], 1)}%", axis=1),
+            color_continuous_scale=['#C8D9E6', '#2F4156']
+        )
+        fig_n.update_layout(title="الوافدين - عدد القيم المفقودة ونسبتها", title_x=0.5, xaxis_tickangle=-45)
+        st.plotly_chart(fig_n, use_container_width=True)
+
+
+        st.markdown("###  تحليل مفقودات عمود محدد")
         selected_column = st.selectbox("اختر عمود", df.columns)
 
         if selected_column:
