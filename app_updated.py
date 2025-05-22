@@ -186,13 +186,13 @@ if uploaded_file:
         st.plotly_chart(fig_c, use_container_width=True)
 
         st.subheader(" نواقص الوافدين ")
-        required_cols = ['رقم الأقامة', 'الكفيل', 'تاريخ اصدار اللإقامة', 'تاريخ انتهاء اللإقامة']
-        filtered_non_df = df_non_citizens[[col for col in required_cols if col in df_non_citizens.columns]]
+        
+        df_non_citizens = df[df['الجنسية'] != 'إماراتية'].copy()
         missing_percent_n = filtered_non_df.isnull().mean() * 100
         missing_count_n = filtered_non_df.isnull().sum()
 
         missing_df_n = pd.DataFrame({
-            'العمود': filtered_non_df.columns,
+            'العمود': df_non_citizens.columns,
             'عدد القيم المفقودة': missing_count_n,
             'النسبة المئوية': missing_percent_n
         }).query("`عدد القيم المفقودة` > 0")
@@ -207,7 +207,6 @@ if uploaded_file:
         )
         fig_n.update_layout(title="الوافدين - عدد القيم المفقودة ونسبتها", title_x=0.5, xaxis_tickangle=-45)
         st.plotly_chart(fig_n, use_container_width=True)
-
 
         st.markdown("###  تحليل مفقودات عمود محدد")
         selected_column = st.selectbox("اختر عمود", df.columns)
