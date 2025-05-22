@@ -36,7 +36,7 @@ with col_logo:
 
 with col_upload:
     st.markdown("<div class='section-header'>يرجى تحميل بيانات الموظفين</div>", unsafe_allow_html=True)
-    uploaded_file = st.file_uploader("ارفع ملف Excel يحتوي على بيانات الموظفين", type=["xlsx"])
+    uploaded_file = st.file_uploader("ارفع الملف", type=["xlsx"])
 
 if uploaded_file:
     all_sheets = pd.read_excel(uploaded_file, sheet_name=None, header=0)
@@ -46,13 +46,13 @@ if uploaded_file:
     df.columns = df.columns.str.strip()
     df = df.loc[:, ~df.columns.duplicated()]
 
-    tab1, tab2, tab3, tab4 = st.tabs(["👁️ نظرة عامة", "📊 تحليلات بصرية", "🧮 البيانات المفقودة", "📋 عرض البيانات"])
+    tab1, tab2, tab3, tab4 = st.tabs([" نظرة عامة", " تحليلات بصرية", " البيانات المفقودة", " عرض البيانات"])
 
     # ---------------- Tab 1 ---------------- #
     with tab1:
-        st.markdown("### 👁️ نظرة عامة للموظفين المواطنين فقط")
+        st.markdown("###  نظرة عامة للموظفين المواطنين فقط")
 
-        df_citizens = df[df['الجنسية'] == 'إماراتي'].copy()
+        df_citizens = df[df['الجنسية'] == 'إماراتية'].copy()
         total = df_citizens.shape[0]
         excluded_cols = ['رقم الأقامة', 'الكفيل', 'تاريخ اصدار اللإقامة', 'تاريخ انتهاء اللإقامة']
         df_citizens_checked = df_citizens.drop(columns=[col for col in excluded_cols if col in df_citizens.columns])
@@ -63,13 +63,13 @@ if uploaded_file:
 
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.markdown(f"<div class='metric-box' style='background-color:#1e3d59;'><h4>👥 عدد المواطنين</h4><h2>{total}</h2></div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='metric-box' style='background-color:#1e3d59;'><h4> عدد المواطنين</h4><h2>{total}</h2></div>", unsafe_allow_html=True)
         with col2:
-            st.markdown(f"<div class='metric-box' style='background-color:#2a4d6f;'><h4>✅ السجلات المكتملة</h4><h2>{complete} ({complete_pct}%)</h2></div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='metric-box' style='background-color:#2a4d6f;'><h4> السجلات المكتملة</h4><h2>{complete} ({complete_pct}%)</h2></div>", unsafe_allow_html=True)
         with col3:
-            st.markdown(f"<div class='metric-box' style='background-color:#4a7ca8;'><h4>⚠️ السجلات الناقصة</h4><h2>{missing_total} ({missing_pct}%)</h2></div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='metric-box' style='background-color:#4a7ca8;'><h4> السجلات الناقصة</h4><h2>{missing_total} ({missing_pct}%)</h2></div>", unsafe_allow_html=True)
 
-        st.markdown("### 👁️ نظرة عامة للموظفين الوافدين فقط")
+        st.markdown("###  نظرة عامة للموظفين الوافدين فقط")
 
         df_non_citizens = df[df['الجنسية'] != 'إماراتي'].copy()
         total_non = df_non_citizens.shape[0]
@@ -83,15 +83,15 @@ if uploaded_file:
 
         col4, col5, col6 = st.columns(3)
         with col4:
-            st.markdown(f"<div class='metric-box' style='background-color:#1e3d59;'><h4>👥 عدد الوافدين</h4><h2>{total_non}</h2></div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='metric-box' style='background-color:#1e3d59;'><h4> عدد الوافدين</h4><h2>{total_non}</h2></div>", unsafe_allow_html=True)
         with col5:
-            st.markdown(f"<div class='metric-box' style='background-color:#2a4d6f;'><h4>✅ السجلات المكتملة</h4><h2>{complete_non} ({complete_non_pct}%)</h2></div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='metric-box' style='background-color:#2a4d6f;'><h4> السجلات المكتملة</h4><h2>{complete_non} ({complete_non_pct}%)</h2></div>", unsafe_allow_html=True)
         with col6:
-            st.markdown(f"<div class='metric-box' style='background-color:#4a7ca8;'><h4>⚠️ السجلات الناقصة</h4><h2>{missing_non} ({missing_non_pct}%)</h2></div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='metric-box' style='background-color:#4a7ca8;'><h4> السجلات الناقصة</h4><h2>{missing_non} ({missing_non_pct}%)</h2></div>", unsafe_allow_html=True)
 
     # ---------------- Tab 2 ---------------- #
     with tab2:
-        st.markdown("### 📊 التحليلات البصرية")
+        st.markdown("###  التحليلات البصرية")
 
         col1, col2 = st.columns(2)
 
@@ -155,7 +155,7 @@ if uploaded_file:
 
     # ---------------- Tab 3 ---------------- #
     with tab3:
-        st.markdown("### 🧮 تحليل البيانات المفقودة")
+        st.markdown("###  تحليل البيانات المفقودة")
 
         missing_percent = df.isnull().mean() * 100
         missing_count = df.isnull().sum()
@@ -209,7 +209,7 @@ if uploaded_file:
 
     # ---------------- Tab 4 ---------------- #
     with tab4:
-        st.markdown("<div class='section-header'>🔎 فلترة حسب القيم</div>", unsafe_allow_html=True)
+        st.markdown("<div class='section-header'> فلترة حسب القيم</div>", unsafe_allow_html=True)
         filter_cols = st.multiselect("اختر أعمدة للفلترة:", df.columns)
         filtered_df = df.copy()
         for col in filter_cols:
@@ -218,7 +218,7 @@ if uploaded_file:
             if selected:
                 filtered_df = filtered_df[filtered_df[col].isin(selected)]
 
-        st.markdown("<div class='section-header'>📋 البيانات بعد الفلترة</div>", unsafe_allow_html=True)
+        st.markdown("<div class='section-header'> البيانات بعد الفلترة</div>", unsafe_allow_html=True)
         st.dataframe(filtered_df)
 
     # --------------- Sidebar Introduction ---------------- #
@@ -233,7 +233,7 @@ if uploaded_file:
 
     # Optional Export from Tab 4
     if not filtered_df.empty:
-        st.sidebar.markdown("### 📥 تحميل البيانات بعد الفلترة")
+        st.sidebar.markdown("###  تحميل البيانات بعد الفلترة")
         csv = filtered_df.to_csv(index=False).encode('utf-8-sig')
         st.sidebar.download_button(
             label="تحميل CSV",
